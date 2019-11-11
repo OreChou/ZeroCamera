@@ -1,14 +1,26 @@
 package org.orechou.camera
 
-interface CameraController {
+import android.util.Size
+import android.view.Surface
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 
+interface CameraController : LifecycleObserver {
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate()
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy()
 
-    fun createCamera()
+    fun createCamera(surface: Surface, previewSize: Size)
 
     fun openCamera()
+
+    fun createSession()
+
+    fun changeSize(previewSize: Size)
 
     fun startPreview()
 

@@ -6,6 +6,9 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CaptureRequest
 import android.os.Handler
+import android.os.HandlerThread
+import android.os.Looper
+import android.util.Log
 import android.util.Size
 import android.view.Surface
 import org.orechou.camera.CameraController
@@ -17,7 +20,7 @@ import org.orechou.support.utils.SystemServiceUtils
  * 1. Connect the CameraDevice, operate camera.
  * 2. It will be always running in camera separate thread.
  */
-class CameraApi2Impl : CameraProxy {
+class CameraApi2Impl(private val cameraHandler: Handler) : CameraProxy {
 
     private var cameraFacing = CameraCharacteristics.LENS_FACING_BACK
     private var cameraDevice: CameraDevice? = null
@@ -27,15 +30,14 @@ class CameraApi2Impl : CameraProxy {
 
     private var previewSurface: Surface? = null
     private var saveImageSurface: Surface? = null
-
-    private val cameraHandler = Handler()
+    private var previewSize: Size? = null
 
     override fun setCameraFacing(facing: Int) {
         cameraFacing = facing
     }
 
     override fun setPreviewSize(size: Size) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        previewSize = size
     }
 
     override fun setPreviewSurface(surface: Surface) {
@@ -58,7 +60,8 @@ class CameraApi2Impl : CameraProxy {
     }
 
     override fun closeCamera() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        cameraDevice?.close()
+        cameraSession?.close()
     }
 
     override fun createSession() {

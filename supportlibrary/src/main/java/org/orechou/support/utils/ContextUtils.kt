@@ -1,22 +1,31 @@
 package org.orechou.support.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.os.IBinder
 
 object ContextUtils {
 
-    private lateinit var application: Application
+    private var application: Application
 
-    fun getApp(): Application {
-        return if (application != null) application else getApplicationByReflect()
+    init {
+        application = getApplicationByReflect()
+    }
+
+    fun getApplication(): Application {
+        return application
     }
 
     fun getApplicationContext(): Context {
-        return getApp().applicationContext
+        return application.applicationContext
     }
 
+    fun getActivity(): Activity {
+        return getTopActivityByReflect()!!
+    }
+
+    @SuppressLint("PrivateApi")
     private fun getApplicationByReflect(): Application {
         val activityThreadClass = Class.forName("android.app.ActivityThread")
         val thread = activityThreadClass.getMethod("currentActivityThread").invoke(null)
@@ -25,12 +34,24 @@ object ContextUtils {
         return application
     }
 
-//    private fun getActivityByReflect(): Activity {
-//        val activityThreadClass  = Class.forName("android.app.ActivityThread")
-//        val activityThread = activityThreadClass .getMethod("currentActivityThread").invoke(null)
-//        val activitiesField = activityThreadClass.getDeclaredField("mActivities")
-//        activitiesField.isAccessible = true
-//        val activities = activitiesField.get(activityThread)
-//    }
+    @SuppressLint("PrivateApi")
+    private fun getTopActivityByReflect(): Activity? {
+        val activityThreadClass = Class.forName("android.app.ActivityThread")
+        val currentActivityThreadMethod = activityThreadClass.getMethod("currentActivityThread").invoke(null)
+        val mActivityListField = activityThreadClass.getDeclaredField("mActivityList")
+        mActivityListField.isAccessible = true
+        val activities = mActivityListField.get(currentActivityThreadMethod) as Map<*, *>
+        for (activityRecord in activities.values) {
+            val activityRecordClass = activityRecord!!.javaClass
+            val pausedField = activityRecordClass.getDeclaredField("paused")
+            pausedField.isAccessible = true
+            if (!pausedField.getBoolean(activityRecord)) {
+                val activityField = activityRecordClass.getDeclaredField("activity")
+                activityField.isAccessible = true
+                return activityField.get(activityRecord) as Activity
+            }
+        }
+        return null
+    }
 
 }
