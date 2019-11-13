@@ -6,7 +6,7 @@
     <data>
         <variable
             name="handler"
-            type="org.orechou.camera.ui.CameraFragment" />
+            type="org.orechou.zero.frgments.CameraFragment" />
     </data>
 
     <RelativeLayout
@@ -48,14 +48,16 @@
                 app:srcCompat="@drawable/ic_photo"/>
 
             <ImageButton
-                android:id="@+id/shutterBtn"
+                android:id="@+id/btnShutter"
+                android:onClick="@{handler.onClick}"
                 android:layout_gravity="center"
                 android:layout_width="@dimen/round_button_medium"
                 android:layout_height="@dimen/round_button_medium"
                 android:background="@drawable/ic_shutter"/>
 
             <ImageButton
-                android:id="@+id/switchBtn"
+                android:id="@+id/btnFacing"
+                android:onClick="@{handler.onClick}"
                 android:layout_width="@dimen/round_button_small"
                 android:layout_height="@dimen/round_button_small"
                 android:layout_gravity="right|center"

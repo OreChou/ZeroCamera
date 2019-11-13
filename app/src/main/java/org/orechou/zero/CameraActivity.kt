@@ -2,7 +2,7 @@ package org.orechou.zero
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import org.orechou.camera.ui.CameraFragment
+import org.orechou.zero.frgments.CameraFragment
 import org.orechou.support.utils.ScreenUtils
 
 class CameraActivity : AppCompatActivity() {

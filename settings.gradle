@@ -1,2 +1,2 @@
-include ':app', ':cameralibrary', ':supportlibrary'
+include ':app', ':cameralibrary', ':supportlibrary', ':renderlibrary'
 rootProject.name='ZeroCamera'

@@ -1,6 +1,5 @@
 package org.orechou.camera
 
-import android.util.Size
 import android.view.Surface
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -11,26 +10,39 @@ interface CameraController : LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate()
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause()
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume()
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy()
 
-    fun createCamera(surface: Surface, previewSize: Size)
+    /**
+     * The method only new instance of CameraProxy
+     */
+    fun createCamera()
 
-    fun openCamera()
+    /**
+     * The method do three things:
+     * 1. openCamera
+     * 2. createSession
+     * 3. startPreview
+     */
+    fun openCamera(previewSurface: Surface, imageRatio: Float)
 
-    fun createSession()
-
-    fun changeSize(previewSize: Size)
-
-    fun startPreview()
-
-    fun takePicture()
+    /**
+     * Change camera facing won't change surface and image ratio
+     */
+    fun changeFacing()
 
     fun closeCamera()
 
-    companion object {
-        const val MSG_CREATE_CAMERA_SUCCESS = 0
-        const val MES_CREATE_CAMERA_SESSION_SUCCESS = 1
-    }
+    fun takePicture()
+
+    fun startRecording()
+
+    fun stopRecording()
 
 }
